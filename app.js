@@ -447,7 +447,7 @@ function renderLeaderboards(records) {
       id: "laggy-legends",
       className: "laggy",
       title: "Laggy legends",
-      subtitle: "Closest sends before workout",
+      subtitle: "Closest calls",
       records: laggyLegends,
     }),
     renderLeaderboardCard({
