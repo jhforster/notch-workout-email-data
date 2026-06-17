@@ -166,6 +166,8 @@ function summarize(records) {
     leadTimes.length % 2
       ? leadTimes[middle]
       : (leadTimes[middle - 1] + leadTimes[middle]) / 2;
+  const noticeRate =
+    records.filter((record) => record.leadHours >= 24).length / records.length;
 
   const mostProactive = records.reduce((best, record) =>
     record.leadHours > best.leadHours ? record : best
@@ -179,6 +181,7 @@ function summarize(records) {
     count: records.length,
     average,
     median,
+    noticeRate,
     mostProactive,
     lastMinute,
     trend,
@@ -224,6 +227,11 @@ function renderSummary(stats) {
       label: "Emails analyzed",
       value: integerFormatter.format(stats.count),
       detail: "Original workout emails only",
+    },
+    {
+      label: "24h+ notice rate",
+      value: `${Math.round(stats.noticeRate * 100)}%`,
+      detail: "Sent at least 24 hours early",
     },
     {
       label: "Average lead time",
@@ -307,7 +315,7 @@ function renderTrend(records, stats) {
           (tick) => `
             <line x1="${padding.left}" y1="${yScale(tick)}" x2="${width - padding.right}" y2="${yScale(
               tick
-            )}" stroke="#eadfd5" stroke-width="1" />
+            )}" stroke="#e9e9ee" stroke-width="1" />
             <text class="tick-label" x="${padding.left - 12}" y="${yScale(tick) + 4}" text-anchor="end">${tick}</text>
           `
         )
