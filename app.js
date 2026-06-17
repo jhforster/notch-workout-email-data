@@ -29,6 +29,7 @@ const shortDateFormatter = new Intl.DateTimeFormat("en-US", {
 const summaryEl = document.querySelector("#summary");
 const chartEl = document.querySelector("#chart");
 const leaderboardsEl = document.querySelector("#leaderboards");
+const yearStatsEl = document.querySelector("#yearStats");
 const recordsEl = document.querySelector("#records");
 const recordCountEl = document.querySelector("#recordCount");
 const trendSummaryEl = document.querySelector("#trendSummary");
@@ -66,6 +67,7 @@ function render() {
   renderSummary(stats);
   renderTrend(records, stats);
   renderLeaderboards(records);
+  renderYearStats(records);
   renderRecords(records);
 }
 
@@ -511,6 +513,57 @@ function renderLeaderboardCard({ id, className, title, subtitle, records }) {
       </ol>
     </article>
   `;
+}
+
+function renderYearStats(records) {
+  const groups = groupRecordsBySentYear(records);
+
+  if (!groups.length) {
+    yearStatsEl.innerHTML = `<tr><td colspan="7">No yearly stats available.</td></tr>`;
+    return;
+  }
+
+  yearStatsEl.innerHTML = groups
+    .map(({ year, records: yearRecords }) => {
+      const stats = summarize(yearRecords);
+
+      return `
+        <tr>
+          <td><span class="year-label">${escapeHTML(year)}</span></td>
+          <td>${escapeHTML(integerFormatter.format(stats.count))}</td>
+          <td>${escapeHTML(Math.round(stats.noticeRate * 100))}%</td>
+          <td>${escapeHTML(formatNumber(stats.average))} hr</td>
+          <td>${escapeHTML(formatNumber(stats.median))} hr</td>
+          <td>
+            <span class="year-extreme">${escapeHTML(formatNumber(stats.mostProactive.leadHours))} hr</span>
+            <span class="year-detail">${escapeHTML(formatShortDate(stats.mostProactive.sentAt))}</span>
+          </td>
+          <td>
+            <span class="year-extreme">${escapeHTML(formatNumber(stats.lastMinute.leadHours))} hr</span>
+            <span class="year-detail">${escapeHTML(formatShortDate(stats.lastMinute.sentAt))}</span>
+          </td>
+        </tr>
+      `;
+    })
+    .join("");
+}
+
+function groupRecordsBySentYear(records) {
+  const groups = new Map();
+
+  records.forEach((record) => {
+    const year = record.sentAt.getFullYear();
+    const yearRecords = groups.get(year) || [];
+    yearRecords.push(record);
+    groups.set(year, yearRecords);
+  });
+
+  return [...groups.entries()]
+    .sort(([yearA], [yearB]) => yearA - yearB)
+    .map(([year, yearRecords]) => ({
+      year,
+      records: yearRecords,
+    }));
 }
 
 function renderRecords(records) {

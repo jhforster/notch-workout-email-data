@@ -109,6 +109,7 @@ h2 {
 .metric-card,
 .chart-panel,
 .leaderboard-card,
+.year-panel,
 .records-panel {
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -190,6 +191,7 @@ h2 {
 
 .chart-panel,
 .leaderboard-card,
+.year-panel,
 .records-panel {
   padding: 20px;
 }
@@ -294,6 +296,36 @@ h2 {
   color: var(--charcoal);
   font-size: 1rem;
   font-weight: 900;
+  white-space: nowrap;
+}
+
+.year-panel {
+  margin-bottom: 16px;
+}
+
+.year-table-wrap {
+  margin-top: 16px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.year-table {
+  min-width: 900px;
+}
+
+.year-label,
+.year-extreme {
+  color: var(--charcoal);
+  font-weight: 900;
+}
+
+.year-detail {
+  display: block;
+  margin-top: 3px;
+  color: #787981;
+  font-size: 0.78rem;
+  font-weight: 720;
   white-space: nowrap;
 }
 

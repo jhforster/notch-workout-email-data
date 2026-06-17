@@ -37,6 +37,31 @@
 
       <section id="leaderboards" class="leaderboard-grid" aria-label="Lead time leaderboards"></section>
 
+      <section class="year-panel" aria-labelledby="yearTitle">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Yearly splits</p>
+            <h2 id="yearTitle">Send timing by year</h2>
+          </div>
+        </div>
+        <div class="year-table-wrap">
+          <table class="year-table">
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Emails analyzed</th>
+                <th>24h+ notice rate</th>
+                <th>Average lead time</th>
+                <th>Median lead time</th>
+                <th>Most proactive</th>
+                <th>Most last minute</th>
+              </tr>
+            </thead>
+            <tbody id="yearStats"></tbody>
+          </table>
+        </div>
+      </section>
+
       <details class="records-panel" aria-labelledby="recordsTitle">
         <summary class="records-summary">
           <div>
