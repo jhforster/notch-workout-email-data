@@ -109,6 +109,7 @@ h2 {
 .metric-card,
 .chart-panel,
 .leaderboard-card,
+.snyder-panel,
 .year-panel,
 .records-panel {
   border: 1px solid var(--line);
@@ -191,6 +192,7 @@ h2 {
 
 .chart-panel,
 .leaderboard-card,
+.snyder-panel,
 .year-panel,
 .records-panel {
   padding: 20px;
@@ -299,6 +301,119 @@ h2 {
   white-space: nowrap;
 }
 
+.snyder-panel {
+  margin-bottom: 16px;
+}
+
+.snyder-index {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  align-items: center;
+  gap: 22px;
+  margin-top: 18px;
+}
+
+.snyder-score {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  min-width: 0;
+}
+
+.snyder-value {
+  display: block;
+  color: var(--charcoal);
+  font-size: clamp(3rem, 8vw, 5.4rem);
+  font-weight: 950;
+  letter-spacing: 0;
+  line-height: 0.9;
+}
+
+.snyder-label {
+  display: block;
+  margin-top: 5px;
+  color: var(--orange-dark);
+  font-size: 0.82rem;
+  font-weight: 850;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.snyder-cutoff {
+  display: block;
+  margin-top: 5px;
+  color: #66615a;
+  font-size: 0.88rem;
+  font-weight: 760;
+}
+
+.snyder-meter,
+.snyder-year-bar {
+  overflow: hidden;
+  border: 1px solid #e3e3e8;
+  border-radius: 999px;
+  background: #f0f0f3;
+}
+
+.snyder-meter {
+  height: 18px;
+}
+
+.snyder-meter span,
+.snyder-year-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--orange) 0%, #f3a22c 45%, var(--green) 100%);
+}
+
+.snyder-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  color: #66615a;
+  font-size: 0.86rem;
+  font-weight: 780;
+}
+
+.snyder-counts span:first-child {
+  color: var(--green);
+}
+
+.snyder-counts span:last-child {
+  color: var(--red);
+}
+
+.snyder-years {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.snyder-year-row {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) 48px;
+  align-items: center;
+  gap: 12px;
+}
+
+.snyder-year {
+  color: var(--charcoal);
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.snyder-year-bar {
+  height: 12px;
+}
+
+.snyder-year-rate {
+  color: #4a4742;
+  font-size: 0.84rem;
+  font-weight: 900;
+  text-align: right;
+}
+
 .year-panel {
   margin-bottom: 16px;
 }
@@ -330,6 +445,7 @@ h2 {
 }
 
 .trend-summary,
+.snyder-summary,
 .record-count {
   color: #4a4742;
   font-size: 0.9rem;
@@ -587,6 +703,10 @@ td:nth-child(3) {
   .leaderboard-grid {
     grid-template-columns: 1fr;
   }
+
+  .snyder-index {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 680px) {
@@ -612,6 +732,7 @@ td:nth-child(3) {
   }
 
   .trend-summary,
+  .snyder-summary,
   .record-count {
     text-align: left;
   }

@@ -1,6 +1,8 @@
 const WORKOUT_DAY = 3;
 const WORKOUT_HOUR = 17;
 const WORKOUT_MINUTE = 15;
+const SNYDER_BEDTIME_HOUR = 20;
+const SNYDER_BEDTIME_MINUTE = 45;
 const REPLY_PREFIX = /^\s*(re|fwd?|fw):/i;
 
 const currencyFormatter = new Intl.NumberFormat("en-US", {
@@ -29,6 +31,8 @@ const shortDateFormatter = new Intl.DateTimeFormat("en-US", {
 const summaryEl = document.querySelector("#summary");
 const chartEl = document.querySelector("#chart");
 const leaderboardsEl = document.querySelector("#leaderboards");
+const snyderIndexEl = document.querySelector("#snyderIndex");
+const snyderSummaryEl = document.querySelector("#snyderSummary");
 const yearStatsEl = document.querySelector("#yearStats");
 const recordsEl = document.querySelector("#records");
 const recordCountEl = document.querySelector("#recordCount");
@@ -67,6 +71,7 @@ function render() {
   renderSummary(stats);
   renderTrend(records, stats);
   renderLeaderboards(records);
+  renderSnyderIndex(records);
   renderYearStats(records);
   renderRecords(records);
 }
@@ -147,12 +152,15 @@ function buildRecords(rows) {
       const sentAt = parseLocalDateTime(row.date, row.time);
       const workoutAt = nextWorkoutAfter(sentAt);
       const leadHours = (workoutAt.getTime() - sentAt.getTime()) / 36e5;
+      const snyderCutoffAt = snyderBedtimeBefore(workoutAt);
 
       return {
         ...row,
         sentAt,
         workoutAt,
         leadHours,
+        snyderCutoffAt,
+        snyderReady: sentAt <= snyderCutoffAt,
       };
     })
     .sort((a, b) => a.sentAt - b.sentAt);
@@ -176,6 +184,13 @@ function nextWorkoutAfter(sentAt) {
   }
 
   return workoutAt;
+}
+
+function snyderBedtimeBefore(workoutAt) {
+  const cutoffAt = new Date(workoutAt);
+  cutoffAt.setDate(cutoffAt.getDate() - 1);
+  cutoffAt.setHours(SNYDER_BEDTIME_HOUR, SNYDER_BEDTIME_MINUTE, 0, 0);
+  return cutoffAt;
 }
 
 function summarize(records) {
@@ -515,6 +530,82 @@ function renderLeaderboardCard({ id, className, title, subtitle, records }) {
   `;
 }
 
+function renderSnyderIndex(records) {
+  const stats = summarizeSnyder(records);
+
+  if (!stats) {
+    snyderSummaryEl.textContent = "";
+    snyderIndexEl.innerHTML = `<div class="empty-state">No Snyder Sunrise data available.</div>`;
+    return;
+  }
+
+  snyderSummaryEl.textContent = `${integerFormatter.format(stats.readyCount)} of ${integerFormatter.format(
+    stats.count
+  )} beat Tuesday 8:45 PM ET`;
+
+  snyderIndexEl.innerHTML = `
+    <div class="snyder-score">
+      <div>
+        <span class="snyder-value">${escapeHTML(formatPercent(stats.rate))}</span>
+        <span class="snyder-label">Snyder-safe sends</span>
+        <span class="snyder-cutoff">By Tue 8:45 PM ET for the 5:10 AM run</span>
+      </div>
+      <div class="snyder-meter" aria-label="${escapeHTML(
+        `${formatPercent(stats.rate)} of emails were sent by Scott's Tuesday bedtime`
+      )}">
+        <span style="width: ${escapeHTML(formatPercent(stats.rate))}"></span>
+      </div>
+      <div class="snyder-counts">
+        <span>${escapeHTML(integerFormatter.format(stats.readyCount))} yes</span>
+        <span>${escapeHTML(integerFormatter.format(stats.lateCount))} no</span>
+      </div>
+    </div>
+    <div class="snyder-years" aria-label="Snyder Sunrise Index by year">
+      ${stats.yearStats.map(renderSnyderYearRow).join("")}
+    </div>
+  `;
+}
+
+function renderSnyderYearRow({ year, count, readyCount, rate }) {
+  return `
+    <div class="snyder-year-row">
+      <span class="snyder-year">${escapeHTML(year)}</span>
+      <span class="snyder-year-bar" title="${escapeHTML(
+        `${readyCount} of ${count} emails beat Scott's bedtime`
+      )}">
+        <span style="width: ${escapeHTML(formatPercent(rate))}"></span>
+      </span>
+      <span class="snyder-year-rate">${escapeHTML(formatPercent(rate))}</span>
+    </div>
+  `;
+}
+
+function summarizeSnyder(records) {
+  if (!records.length) {
+    return null;
+  }
+
+  const readyCount = records.filter((record) => record.snyderReady).length;
+  const yearStats = groupRecordsBySentYear(records).map(({ year, records: yearRecords }) => {
+    const yearReadyCount = yearRecords.filter((record) => record.snyderReady).length;
+
+    return {
+      year,
+      count: yearRecords.length,
+      readyCount: yearReadyCount,
+      rate: yearReadyCount / yearRecords.length,
+    };
+  });
+
+  return {
+    count: records.length,
+    readyCount,
+    lateCount: records.length - readyCount,
+    rate: readyCount / records.length,
+    yearStats,
+  };
+}
+
 function renderYearStats(records) {
   const groups = groupRecordsBySentYear(records);
 
@@ -649,6 +740,10 @@ function pointColor(leadHours) {
 
 function formatNumber(value) {
   return currencyFormatter.format(value);
+}
+
+function formatPercent(value) {
+  return `${Math.round(value * 100)}%`;
 }
 
 function formatDate(date) {
