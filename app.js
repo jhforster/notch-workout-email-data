@@ -226,47 +226,57 @@ function renderSummary(stats) {
     {
       label: "Emails analyzed",
       value: integerFormatter.format(stats.count),
-      detail: "Original workout emails only",
+      detailLines: ["Original workout", "emails only"],
     },
     {
       label: "24h+ notice rate",
       value: `${Math.round(stats.noticeRate * 100)}%`,
-      detail: "Sent at least 24 hours early",
+      detailLines: ["Sent at least 24h", "before workout"],
     },
     {
       label: "Average lead time",
       value: `${formatNumber(stats.average)} hr`,
-      detail: "Mean hours before workout",
+      detailLines: ["Mean hours before", "workout start"],
     },
     {
       label: "Median lead time",
       value: `${formatNumber(stats.median)} hr`,
-      detail: "Middle send timing",
+      detailLines: ["Middle send timing", "across all emails"],
     },
     {
       label: "Most proactive",
       value: `${formatNumber(stats.mostProactive.leadHours)} hr`,
-      detail: `${formatShortDate(stats.mostProactive.sentAt)} · ${stats.mostProactive.subject}`,
+      detailLines: [formatShortDate(stats.mostProactive.sentAt), stats.mostProactive.subject],
       className: "extreme",
+      href: "#early-birds",
     },
     {
       label: "Most last minute",
       value: `${formatNumber(stats.lastMinute.leadHours)} hr`,
-      detail: `${formatShortDate(stats.lastMinute.sentAt)} · ${stats.lastMinute.subject}`,
+      detailLines: [formatShortDate(stats.lastMinute.sentAt), stats.lastMinute.subject],
       className: "last-minute",
+      href: "#laggy-legends",
     },
   ];
 
   summaryEl.innerHTML = cards
-    .map(
-      (card) => `
-        <article class="metric-card ${card.className || ""}">
+    .map((card) => {
+      const tag = card.href ? "a" : "article";
+      const href = card.href ? ` href="${card.href}"` : "";
+      const linkClass = card.href ? " metric-link" : "";
+
+      return `
+        <${tag} class="metric-card${linkClass} ${card.className || ""}"${href}>
           <p class="metric-label">${escapeHTML(card.label)}</p>
           <p class="metric-value">${escapeHTML(card.value)}</p>
-          <p class="metric-detail">${escapeHTML(card.detail)}</p>
-        </article>
-      `
-    )
+          <p class="metric-detail">
+            ${card.detailLines
+              .map((line) => `<span>${escapeHTML(line)}</span>`)
+              .join("")}
+          </p>
+        </${tag}>
+      `;
+    })
     .join("");
 }
 
@@ -434,12 +444,14 @@ function renderLeaderboards(records) {
 
   leaderboardsEl.innerHTML = [
     renderLeaderboardCard({
+      id: "laggy-legends",
       className: "laggy",
       title: "Laggy legends",
       subtitle: "Closest sends before workout",
       records: laggyLegends,
     }),
     renderLeaderboardCard({
+      id: "early-birds",
       className: "early",
       title: "Early birds",
       subtitle: "Biggest lead times",
@@ -448,9 +460,9 @@ function renderLeaderboards(records) {
   ].join("");
 }
 
-function renderLeaderboardCard({ className, title, subtitle, records }) {
+function renderLeaderboardCard({ id, className, title, subtitle, records }) {
   return `
-    <article class="leaderboard-card ${className}">
+    <article id="${id}" class="leaderboard-card ${className}">
       <div class="leaderboard-header">
         <div>
           <p class="eyebrow">Segment leaderboard</p>

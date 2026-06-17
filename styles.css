@@ -120,7 +120,7 @@ h2 {
   min-height: 172px;
   padding: 16px;
   position: relative;
-  border-top: 5px solid var(--orange);
+  text-decoration: none;
 }
 
 .metric-label {
@@ -158,14 +158,34 @@ h2 {
   color: #66615a;
   font-size: 0.86rem;
   line-height: 1.35;
+  min-height: 2.7em;
 }
 
-.metric-card.extreme {
-  border-top: 5px solid var(--green);
+.metric-detail span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.metric-card.last-minute {
-  border-top: 5px solid var(--red);
+.metric-link {
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.metric-link:hover,
+.metric-link:focus-visible {
+  border-color: rgba(252, 76, 2, 0.42);
+  box-shadow: 0 12px 32px rgba(252, 76, 2, 0.12);
+  transform: translateY(-1px);
+}
+
+.metric-link:focus-visible {
+  outline: 3px solid rgba(252, 76, 2, 0.28);
+  outline-offset: 3px;
 }
 
 .chart-panel,
