@@ -548,7 +548,7 @@ function renderSnyderIndex(records) {
       <div>
         <span class="snyder-value">${escapeHTML(formatPercent(stats.rate))}</span>
         <span class="snyder-label">Snyder-safe sends</span>
-        <span class="snyder-cutoff">By Tue 8:45 PM ET for the 5:10 AM run</span>
+        <span class="snyder-cutoff">Did Scott see the email before going to sleep?</span>
       </div>
       <div class="snyder-meter" aria-label="${escapeHTML(
         `${formatPercent(stats.rate)} of emails were sent by Scott's Tuesday bedtime`
