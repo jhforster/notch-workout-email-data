@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Notch Workout Email Analysis</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="page-header">
+        <div>
+          <p class="eyebrow">Run training log</p>
+          <h1>Notch workout email analysis</h1>
+        </div>
+      </header>
+
+      <section class="assumptions" aria-label="Analysis assumptions">
+        <span>Workout start: Wednesday 5:15 PM ET</span>
+        <span>Emails match to the next workout</span>
+        <span>Original workout emails only</span>
+        <span>Lead time shown in hours</span>
+      </section>
+
+      <section id="summary" class="summary-grid" aria-label="Summary metrics"></section>
+
+      <section class="chart-panel" aria-labelledby="trendTitle">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Trend</p>
+            <h2 id="trendTitle">Lead time over time</h2>
+          </div>
+          <div id="trendSummary" class="trend-summary"></div>
+        </div>
+        <div id="chart" class="chart" role="img" aria-label="Email lead time trend chart"></div>
+      </section>
+
+      <section id="leaderboards" class="leaderboard-grid" aria-label="Lead time leaderboards"></section>
+
+      <section class="records-panel" aria-labelledby="recordsTitle">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Emails</p>
+            <h2 id="recordsTitle">Analyzed workout sends</h2>
+          </div>
+          <div id="recordCount" class="record-count"></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Workout</th>
+                <th>Email sent</th>
+                <th>Lead time</th>
+                <th>Subject</th>
+              </tr>
+            </thead>
+            <tbody id="records"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
