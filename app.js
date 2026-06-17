@@ -315,8 +315,8 @@ function renderTrend(records, stats) {
   const direction = totalChange >= 0 ? "earlier" : "closer to workout time";
   trendSummaryEl.textContent =
     stats.trend.label === "no clear change"
-      ? "Dashed line shows the overall trend"
-      : `Dashed line suggests emails are drifting ${direction}`;
+      ? "Trend line shows the overall trend"
+      : `Trend line suggests emails are drifting ${direction}`;
 
   chartEl.innerHTML = `
     <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
