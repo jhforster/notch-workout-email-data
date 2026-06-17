@@ -37,28 +37,49 @@
 
       <section id="leaderboards" class="leaderboard-grid" aria-label="Lead time leaderboards"></section>
 
-      <section class="records-panel" aria-labelledby="recordsTitle">
-        <div class="panel-header">
+      <details class="records-panel" aria-labelledby="recordsTitle">
+        <summary class="records-summary">
           <div>
             <p class="eyebrow">Emails</p>
             <h2 id="recordsTitle">Analyzed workout sends</h2>
           </div>
-          <div id="recordCount" class="record-count"></div>
+          <div class="records-summary-meta">
+            <span id="recordCount" class="record-count"></span>
+            <span class="accordion-chevron" aria-hidden="true"></span>
+          </div>
+        </summary>
+        <div class="records-content">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th aria-sort="none">
+                    <button type="button" class="sort-button" data-sort="workoutAt">
+                      Workout <span class="sort-indicator" aria-hidden="true"></span>
+                    </button>
+                  </th>
+                  <th aria-sort="descending">
+                    <button type="button" class="sort-button" data-sort="sentAt">
+                      Email sent <span class="sort-indicator" aria-hidden="true"></span>
+                    </button>
+                  </th>
+                  <th aria-sort="none">
+                    <button type="button" class="sort-button" data-sort="leadHours">
+                      Lead time <span class="sort-indicator" aria-hidden="true"></span>
+                    </button>
+                  </th>
+                  <th aria-sort="none">
+                    <button type="button" class="sort-button" data-sort="subject">
+                      Subject <span class="sort-indicator" aria-hidden="true"></span>
+                    </button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="records"></tbody>
+            </table>
+          </div>
         </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Workout</th>
-                <th>Email sent</th>
-                <th>Lead time</th>
-                <th>Subject</th>
-              </tr>
-            </thead>
-            <tbody id="records"></tbody>
-          </table>
-        </div>
-      </section>
+      </details>
     </main>
 
     <script src="app.js"></script>

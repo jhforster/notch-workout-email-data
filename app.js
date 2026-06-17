@@ -32,9 +32,14 @@ const leaderboardsEl = document.querySelector("#leaderboards");
 const recordsEl = document.querySelector("#records");
 const recordCountEl = document.querySelector("#recordCount");
 const trendSummaryEl = document.querySelector("#trendSummary");
+const sortButtons = document.querySelectorAll(".sort-button");
 
 let rawRows = [];
 let resizeTimer = null;
+let recordsSort = {
+  key: "sentAt",
+  direction: "desc",
+};
 
 init();
 
@@ -42,6 +47,11 @@ async function init() {
   const response = await fetch("data.csv");
   const csv = await response.text();
   rawRows = parseCSV(csv);
+  sortButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      setRecordsSort(button.dataset.sort);
+    });
+  });
   window.addEventListener("resize", () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(render, 120);
@@ -57,6 +67,19 @@ function render() {
   renderTrend(records, stats);
   renderLeaderboards(records);
   renderRecords(records);
+}
+
+function setRecordsSort(key) {
+  if (!key) {
+    return;
+  }
+
+  recordsSort = {
+    key,
+    direction:
+      recordsSort.key === key && recordsSort.direction === "asc" ? "desc" : "asc",
+  };
+  renderRecords(buildRecords(rawRows));
 }
 
 function parseCSV(text) {
@@ -493,9 +516,9 @@ function renderLeaderboardCard({ id, className, title, subtitle, records }) {
 function renderRecords(records) {
   recordCountEl.textContent = `${integerFormatter.format(records.length)} emails`;
 
-  recordsEl.innerHTML = records
-    .slice()
-    .reverse()
+  updateSortHeaders();
+
+  recordsEl.innerHTML = sortRecords(records)
     .map(
       (record) => `
         <tr>
@@ -507,6 +530,55 @@ function renderRecords(records) {
       `
     )
     .join("");
+}
+
+function sortRecords(records) {
+  const sorted = records.slice().sort((a, b) => {
+    const comparison = compareRecordValues(a, b, recordsSort.key);
+    return recordsSort.direction === "asc" ? comparison : -comparison;
+  });
+
+  return sorted;
+}
+
+function compareRecordValues(a, b, key) {
+  if (key === "subject") {
+    return a.subject.localeCompare(b.subject, undefined, {
+      numeric: true,
+      sensitivity: "base",
+    });
+  }
+
+  if (key === "leadHours") {
+    return a.leadHours - b.leadHours;
+  }
+
+  if (key === "workoutAt") {
+    return a.workoutAt - b.workoutAt;
+  }
+
+  return a.sentAt - b.sentAt;
+}
+
+function updateSortHeaders() {
+  sortButtons.forEach((button) => {
+    const th = button.closest("th");
+    const isActive = button.dataset.sort === recordsSort.key;
+    const indicator = button.querySelector(".sort-indicator");
+
+    th.setAttribute(
+      "aria-sort",
+      isActive ? (recordsSort.direction === "asc" ? "ascending" : "descending") : "none"
+    );
+    button.classList.toggle("is-active", isActive);
+    if (indicator) {
+      indicator.textContent = isActive
+        ? recordsSort.direction === "asc"
+          ? "↑"
+          : "↓"
+        : "";
+    }
+  });
 }
 
 function pointColor(leadHours) {

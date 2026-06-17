@@ -414,8 +414,47 @@ h2 {
   cursor: crosshair;
 }
 
+.records-panel {
+  scroll-margin-top: 18px;
+}
+
+.records-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.records-summary::-webkit-details-marker {
+  display: none;
+}
+
+.records-summary-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.accordion-chevron {
+  width: 12px;
+  height: 12px;
+  border-right: 2px solid var(--orange);
+  border-bottom: 2px solid var(--orange);
+  transform: rotate(45deg);
+  transition: transform 160ms ease;
+}
+
+.records-panel[open] .accordion-chevron {
+  transform: rotate(225deg);
+}
+
+.records-content {
+  padding-top: 16px;
+}
+
 .table-wrap {
-  margin-top: 16px;
   max-height: 520px;
   overflow: auto;
   border: 1px solid var(--line);
@@ -430,10 +469,13 @@ table {
 
 th,
 td {
-  padding: 11px 12px;
   border-bottom: 1px solid #ececf0;
   text-align: left;
   vertical-align: top;
+}
+
+td {
+  padding: 11px 12px;
 }
 
 th {
@@ -446,6 +488,42 @@ th {
   font-weight: 850;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+.sort-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-height: 42px;
+  padding: 11px 12px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  text-transform: inherit;
+}
+
+.sort-button:hover,
+.sort-button:focus-visible,
+.sort-button.is-active {
+  color: var(--orange-dark);
+}
+
+.sort-button:focus-visible {
+  outline: 3px solid rgba(252, 76, 2, 0.24);
+  outline-offset: -3px;
+}
+
+.sort-indicator {
+  min-width: 1em;
+  color: var(--orange-dark);
+  font-size: 0.86rem;
+  text-align: right;
 }
 
 td {
@@ -486,7 +564,8 @@ td:nth-child(3) {
   }
 
   .page-header,
-  .panel-header {
+  .panel-header,
+  .records-summary {
     align-items: flex-start;
     flex-direction: column;
   }
@@ -503,6 +582,11 @@ td:nth-child(3) {
   .trend-summary,
   .record-count {
     text-align: left;
+  }
+
+  .records-summary-meta {
+    width: 100%;
+    justify-content: space-between;
   }
 
   .leaderboard-header {
